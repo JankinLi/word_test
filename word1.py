@@ -20,4 +20,5 @@ def test1():
 if __name__ == "__main__":
     print("word test.");
     test1();
+	print("end.");
 
