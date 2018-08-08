@@ -7,18 +7,34 @@ def test1():
     print(filePath);
     file = docx.Document(filePath);
     print("段落数:" + str(len(file.paragraphs)));
-    # 输出每一段的内容
-    for para in file.paragraphs:
-        print(para.text)
+    tables = file.tables;
+    print("表格数："+ str(len(tables)));
+    for table in tables:
+        printTable(table);
+
+def printTable(table):
+    # 输出每一表格的内容
+    lineNo=0;
+    for row in table.rows:
+        lineNo=lineNo+1;
+        cells = row.cells;
+        colNo = 0;
+        savedText = "";
+        for cell in cells:
+            if( savedText == cell.text):
+                continue;
+            colNo = colNo + 1;
+            print("line:"+ str(lineNo) + ",col:" + str(colNo) + "," + cell.text);
+            savedText = cell.text;
+
 
     # 输出段落编号及段落内容
-    for i in range(len(file.paragraphs)):
-        print("第" + str(i) + "段的内容是：" + file.paragraphs[i].text)
+    #for i in range(len(file.paragraphs)):
+    #    print("第" + str(i) + "段的内容是：" + file.paragraphs[i].text)
     print("test1 end.");
 
 
 if __name__ == "__main__":
     print("word test.");
     test1();
-	print("end.");
 
