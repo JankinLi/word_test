@@ -20,11 +20,11 @@ def printSheet(sheetSrc):
         order = 0;
         for cell in row :
             if cell.ctype == xlrd.XL_CELL_TEXT :
-                dir = {order,cell.value };
+                dir = {order:cell.value };
                 rowList.append( dir );
                 b = 1;
             if cell.ctype == xlrd.XL_CELL_NUMBER :
-                dir = {order, str(int(cell.value)) };
+                dir = {order:str(int(cell.value)) };
                 rowList.append(dir);
                 b = 1;
             order+=1;
