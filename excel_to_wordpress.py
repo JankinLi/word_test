@@ -32,15 +32,36 @@ def parseData(sheetSrc):
             order += 1;
         if b:
             if len(rowList) >= 5:
-                print(rowList);
+                #print(rowList);
                 num += 1;
                 if num > 1:
-                    postNewPost(rowList);
-                    break;
+                    postNewPost(num, rowList);
+                    if( num > 3) :
+                        break;
 
-def postNewPost(data):
-    print("postNewPost begin.");
-    
+def postNewPost(order, data):
+    print("postNewPost begin. order="+ str(order));
+    if (len(data) < 5):
+        return;
+    for cell in data:
+        if cell.has_key(1) :
+            title = cell.get(1);
+        if cell.has_key(4) :
+            content = cell.get(4);
+    postNewPostByXmlRpc(title, content);
+
+def postNewPostByXmlRpc(title, content):
+    print("postNewPostByXmlRpc");
+    wp = Client('http://39.106.104.45/wordpress/xmlrpc.php', 'shikun', 'ShiKun001')
+    post = WordPressPost();
+    post.title = title;
+    post.content = content;
+    post.terms_names = {
+        'post_tag': ['test', 'lichuan'],
+        'category': ['Introductions', 'Tests']
+    };
+    post.id = wp.call(NewPost(post));
+    print("post.id = " + str(post.id));
 
 if __name__ =="__main__" :
     print("read excel into wordpress begin.");
