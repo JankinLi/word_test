@@ -36,8 +36,8 @@ def parseData(sheetSrc):
                 num += 1;
                 if num > 1:
                     postNewPost(num, rowList);
-                    if( num > 3) :
-                        break;
+                    #if( num > 3) :
+                    break;
 
 def postNewPost(order, data):
     print("postNewPost begin. order="+ str(order));
@@ -48,20 +48,78 @@ def postNewPost(order, data):
             title = cell.get(1);
         if cell.has_key(4) :
             content = cell.get(4);
-    postNewPostByXmlRpc(title, content);
+        if( cell.has_key(2)) :
+            enterName = cell.get(2);
+        if (cell.has_key(3)):
+            techField = cell.get(3);
+        if (cell.has_key(5)):
+            techMaturity = cell.get(5);
+        if (cell.has_key(14)):
+            contactName = cell.get(14);
+        if (cell.has_key(15)):
+            contactTel = cell.get(15);
+        if (cell.has_key(16)):
+            contactEmail = cell.get(16);
+    postNewPostByXmlRpc(title, content,enterName,techField,techMaturity,contactName,contactTel,contactEmail);
 
-def postNewPostByXmlRpc(title, content):
+def postNewPostByXmlRpc(title, content, enterName,techField,techMaturity,contactName,contactTel,contactEmail):
     print("postNewPostByXmlRpc");
     wp = Client('http://39.106.104.45/wordpress/xmlrpc.php', 'shikun', 'ShiKun001')
     post = WordPressPost();
     post.title = title;
     post.content = content;
     post.terms_names = {
-        'post_tag': ['test', 'lichuan'],
-        'category': ['Introductions', 'Tests']
+        'post_tag': ['北京理工大学'],
+        'category': ['成果展示']
     };
+    #post.custom_fields = {
+    #    'enter-name':enterName,
+    #    'tech-field': techField,
+    #    'tech-maturity': techMaturity,
+    #    'contact-name':contactName,
+    #    'contact-tel':contactTel,
+    #    'contact-email':contactEmail
+    #};
     post.id = wp.call(NewPost(post));
     print("post.id = " + str(post.id));
+    postId = post.id;
+    insertOtherDataIntoDB(postId,enterName,techField,techMaturity,contactName,contactTel,contactEmail);
+
+def insertOtherDataIntoDB(postId,enterName,techField,techMaturity,contactName,contactTel,contactEmail) :
+    print("insertOtherDataIntoDB  postId= " + str(postId));
+    insertMeta(postId, "enter-name", enterName);
+    insertMeta(postId, "tech-field", techField);
+    insertMeta(postId, "tech-maturity", techMaturity);
+    insertMeta(postId, "contact-name", contactName);
+    insertMeta(postId, "contact-tel", contactTel);
+    insertMeta(postId, "contact-email", contactEmail);
+
+def insertMeta(postId, key, value):
+    print("insertMeta begin.")
+    db = MySQLdb.connect("localhost", "root", "magic123", "bitnami_wordpress", charset='utf8', unix_socket='/opt/wordpress-4.9.8-0/mysql/tmp/mysql.sock');
+    cursor = db.cursor();
+    cursor.execute("SET NAMES utf8");
+
+    sql = """INSERT INTO wp_postmeta(post_id,
+                 meta_key, meta_value) """.encode(encoding='utf-8');
+    sql += "VALUES (".encode(encoding='utf-8');
+    sql += postId;
+    sql += ",'";
+    sql += key;
+    sql += "','";
+    sql += value;
+    sql += "')";
+    # print("sql="+sql);
+
+    try:
+        cursor.execute(sql);
+        db.commit();
+    except BaseException as tmp:
+        # Rollback in case there is any error
+        print("occur except." + str(tmp));
+        db.rollback();
+    db.close();
+    print("insertMeta end..");
 
 if __name__ =="__main__" :
     print("read excel into wordpress begin.");
