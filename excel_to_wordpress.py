@@ -43,6 +43,14 @@ def postNewPost(order, data):
     print("postNewPost begin. order="+ str(order));
     if (len(data) < 5):
         return;
+    title="";
+    content="";
+    enterName="";
+    techField="";
+    contactName="";
+    contactTel="";
+    contactEmail="";
+    completeDate="";
     for cell in data:
         if cell.has_key(1) :
             title = cell.get(1);
@@ -60,9 +68,11 @@ def postNewPost(order, data):
             contactTel = cell.get(15);
         if (cell.has_key(16)):
             contactEmail = cell.get(16);
-    postNewPostByXmlRpc(title, content,enterName,techField,techMaturity,contactName,contactTel,contactEmail);
+        if cell.has_key( 17) :
+            completeDate = cell.get(17);
+    postNewPostByXmlRpc(title, content,enterName,techField,techMaturity,contactName,contactTel,contactEmail,completeDate);
 
-def postNewPostByXmlRpc(title, content, enterName,techField,techMaturity,contactName,contactTel,contactEmail):
+def postNewPostByXmlRpc(title, content, enterName,techField,techMaturity,contactName,contactTel,contactEmail,completeDate):
     print("postNewPostByXmlRpc");
     wp = Client('http://39.106.104.45/wordpress/xmlrpc.php', 'shikun', 'ShiKun001')
     post = WordPressPost();
@@ -83,16 +93,20 @@ def postNewPostByXmlRpc(title, content, enterName,techField,techMaturity,contact
     post.id = wp.call(NewPost(post));
     print("post.id = " + str(post.id));
     postId = post.id;
-    insertOtherDataIntoDB(postId,enterName,techField,techMaturity,contactName,contactTel,contactEmail);
+    insertOtherDataIntoDB(postId,enterName,techField,techMaturity,contactName,contactTel,contactEmail,completeDate);
 
-def insertOtherDataIntoDB(postId,enterName,techField,techMaturity,contactName,contactTel,contactEmail) :
+def insertOtherDataIntoDB(postId,enterName,techField,techMaturity,contactName,contactTel,contactEmail,completeDate) :
     print("insertOtherDataIntoDB  postId= " + str(postId));
     insertMeta(postId, "enter-name", enterName);
     insertMeta(postId, "tech-field", techField);
     insertMeta(postId, "tech-maturity", techMaturity);
     insertMeta(postId, "contact-name", contactName);
     insertMeta(postId, "contact-tel", contactTel);
+    print("contact-tel=" + contactTel);
     insertMeta(postId, "contact-email", contactEmail);
+    if len(completeDate)> 0 :
+        print("tech-date="+completeDate);
+        inserMeta(postId, "tech-date", completeDate);
 
 def insertMeta(postId, key, value):
     print("insertMeta begin.")
