@@ -37,7 +37,7 @@ def parseData(sheetSrc):
                 if num > 1:
                     postNewPost(num, rowList);
                     #if( num > 3) :
-                    break;
+                    #break;
 
 def postNewPost(order, data):
     print("postNewPost begin. order="+ str(order));
@@ -47,10 +47,12 @@ def postNewPost(order, data):
     content="";
     enterName="";
     techField="";
+    techMaturity="";
     contactName="";
     contactTel="";
     contactEmail="";
     completeDate="";
+
     for cell in data:
         if cell.has_key(1) :
             title = cell.get(1);
@@ -97,13 +99,19 @@ def postNewPostByXmlRpc(title, content, enterName,techField,techMaturity,contact
 
 def insertOtherDataIntoDB(postId,enterName,techField,techMaturity,contactName,contactTel,contactEmail,completeDate) :
     print("insertOtherDataIntoDB  postId= " + str(postId));
-    insertMeta(postId, "enter-name", enterName);
-    insertMeta(postId, "tech-field", techField);
-    insertMeta(postId, "tech-maturity", techMaturity);
-    insertMeta(postId, "contact-name", contactName);
-    insertMeta(postId, "contact-tel", contactTel);
-    print("contact-tel=" + contactTel);
-    insertMeta(postId, "contact-email", contactEmail);
+    if len(enterName) > 0:
+        insertMeta(postId, "enter-name", enterName);
+    if len(techField)>0 :
+        insertMeta(postId, "tech-field", techField);
+    if len( techMaturity) > 0 :
+        insertMeta(postId, "tech-maturity", techMaturity);
+    if len(contactName) > 0:
+        insertMeta(postId, "contact-name", contactName);
+    if len(contactTel) > 0:
+        insertMeta(postId, "contact-tel", contactTel);
+        print("contact-tel=" + contactTel);
+    if len(contactEmail)>0:
+        insertMeta(postId, "contact-email", contactEmail);
     if len(completeDate)> 0 :
         print("tech-date="+completeDate);
         inserMeta(postId, "tech-date", completeDate);
