@@ -5,6 +5,7 @@ if sys.getdefaultencoding() != 'utf-8':
     reload(sys);
     sys.setdefaultencoding('utf-8');
 
+import os;
 import xlrd;
 import MySQLdb;
 from wordpress_xmlrpc import Client, WordPressPost;
@@ -138,6 +139,12 @@ def postNewPostByXmlRpc(title, content, enterName,techField,techMaturity,contact
     postId = post.id;
     insertOtherDataIntoDB(postId,enterName,techField,techMaturity,contactName,contactTel,contactEmail,completeDate,
                           cowork_type,district);
+    savePostId(postId);
+
+def savePostId(postId):
+    f = open("/opt/tmp/postId.txt", "a");
+    f.write(str(postId));
+    f.close();
 
 def gen_content(content, enterName,applyStatus,apply_score, result_type, award_type, award_level, prospect_promotion,
                 patent_name,postal_address):
@@ -248,5 +255,9 @@ def insertMeta(postId, key, value):
 
 if __name__ =="__main__" :
     print("read excel into wordpress begin.");
+    try:
+        os.remove("""/opt/tmp/postId.txt""");
+    except OSError as tmp:
+        print(tmp);
     readExcel();
     print("read excel into wordpress end.")
