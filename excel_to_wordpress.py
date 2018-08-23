@@ -41,8 +41,8 @@ def parseData(sheetSrc):
                 num += 1;
                 if num > 1:
                     postNewPost(num, rowList);
-                    #if( num > 3) :
-                    break;
+                    #if( num > 2) :
+                    #    break;
 
 def postNewPost(order, data):
     print("postNewPost begin. order="+ str(order));
@@ -144,6 +144,7 @@ def postNewPostByXmlRpc(title, content, enterName,techField,techMaturity,contact
 def savePostId(postId):
     f = open("/opt/tmp/postId.txt", "a");
     f.write(str(postId));
+    f.write('\n');
     f.close();
 
 def gen_content(content, enterName,applyStatus,apply_score, result_type, award_type, award_level, prospect_promotion,
