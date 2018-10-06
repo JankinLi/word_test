@@ -140,7 +140,7 @@ def readXml(path):
     Handler = XmlHanlder();
     parser.setContentHandler(Handler);
     parser.parse(path);
-    print("Page Number:"+str(Handler.pageNumher));
+    #print("Page Number:"+str(Handler.pageNumher));
     i = 0;
     for item in Handler.list:
         #print (item);
@@ -154,8 +154,9 @@ def createAllPost(list,prov):
     for item in list:
         createPostByItem(item,prov);
         num+=1;
-        if num >2 :
-            break;
+        #if num >2 :
+        #    break;
+    print("num="+str(num));
 
 def createPostByItem(item,prov):
     title = "";
@@ -317,11 +318,11 @@ def insertOtherDataIntoDB(postId,enterName,techField,techMaturity,contactName,co
         insertMeta(postId, "contact-name", contactName);
     if len(contactTel) > 0:
         insertMeta(postId, "contact-tel", contactTel);
-        print("contact-tel=" + contactTel);
+        #print("contact-tel=" + contactTel);
     if len(contactEmail)>0:
         insertMeta(postId, "contact-email", contactEmail);
     if len(completeDate)> 0 :
-        print("tech-date="+completeDate);
+        #print("tech-date="+completeDate);
         insertMeta(postId, "tech-date", completeDate);
     if len(cowork_type)>0:
         insertMeta(postId, "cowork-type", cowork_type);
@@ -329,7 +330,7 @@ def insertOtherDataIntoDB(postId,enterName,techField,techMaturity,contactName,co
         insertMeta(postId, "district_name", district);
 
 def insertMeta(postId, key, value):
-    print("insertMeta begin.");
+    #print("insertMeta begin.");
     db = MySQLdb.connect("localhost", "root", "magic123", "bitnami_wordpress", charset='utf8', unix_socket='/opt/wordpress-4.9.8-0/mysql/tmp/mysql.sock');
     cursor = db.cursor();
     cursor.execute("SET NAMES utf8");
@@ -353,10 +354,10 @@ def insertMeta(postId, key, value):
         print("occur except." + str(tmp));
         db.rollback();
     db.close();
-    print("insertMeta end..");
+    #print("insertMeta end..");
 
 def insertProvDataIntoDB(postId, prov, enterName):
-    print("insertProvDataIntoDB begin.");
+    print("insertProvDataIntoDB begin.postId="+str(postId));
 
     prefix = enterName[0:2];
     code = findCode(prov, prefix);
@@ -367,10 +368,10 @@ def insertProvDataIntoDB(postId, prov, enterName):
     cursor = db.cursor();
     cursor.execute("SET NAMES utf8");
 
-    ret = insertDataIntoTermRelationShip(db,cursor, postId, code);
+    ret = insertDataIntoTermRelationShip(db,cursor, postId, str(code));
     if ret == 0 :
         if parentCode!= -1 :
-            insertDataIntoTermRelationShip(db, cursor, postId, parentCode);
+            insertDataIntoTermRelationShip(db, cursor, postId, str(parentCode));
 
     db.close();
     print("insertProvDataIntoDB end..");
@@ -423,7 +424,7 @@ def readProvince(path):
     for sheetTemp in workbook.sheets() :
         rowNum = sheetTemp.nrows;
         if rowNum != 0:
-            print(rowNum);
+            #print(rowNum);
             list = readProvinceSheet(sheetTemp);
             break;
     return list;
@@ -446,7 +447,7 @@ def readProvinceSheet(sheetSrc):
                 b = 1;
             order += 1;
         if b == 1:
-            print(rowList);
+            #print(rowList);
             result.append(rowList);
     return result;
 
